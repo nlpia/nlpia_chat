@@ -9,6 +9,7 @@ https://github.com/pypa/sampleproject
 from setuptools import setup, find_packages
 from os import path
 import subprocess
+import re
 
 here = path.abspath(path.dirname(__file__))
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
@@ -19,14 +20,21 @@ install_requires = (
 )
 
 try:
-    __version__ = subprocess.check_output(["git", "describe"]).strip()
+    ver = subprocess.check_output(["git", "describe"]).decode().strip().lstrip('v')
 except subprocess.CalledProcessError:
-    __version__ = subprocess.check_output(["git", "log"])[7:49].strip()
+    # refspec = str(subprocess.check_output(["git", "log"])[7:49]).decode().strip()
+    ver = '0.0.1'
+
+RE_VERSION = r'(\d+(\.\d)*((a|b|rc)\d*)?(\.post\d+)?(\.dev\d+)?)'
+match = re.search(f'{RE_VERSION}' + r'(-\d+)?\b', ver)
+ver = match.group(1) + (match.group(7) or '')
+ver = ver.replace('-', '.post')
+__version__ = re.search(f'{RE_VERSION}', ver).group(1)
 
 setup(
     name='nlpia_chat',
 
-    version=__version__,
+    version='0.0.0',
 
     description='A simple chat app (private chat forum like Slack) based on the channels.readthedocs.io',
 
@@ -44,8 +52,6 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: WSGI :: Application',
         'Framework :: Django',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
