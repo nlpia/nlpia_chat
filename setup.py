@@ -29,12 +29,12 @@ RE_VERSION = r'(\d+(\.\d)*((a|b|rc)\d*)?(\.post\d+)?(\.dev\d+)?)'
 match = re.search(f'{RE_VERSION}' + r'(-\d+)?\b', ver)
 ver = match.group(1) + (match.group(7) or '')
 ver = ver.replace('-', '.post')
-__version__ = re.search(f'{RE_VERSION}', ver).group(1)
+__version__ = re.search(f'{RE_VERSION}', ver).group(1) or '0.0.0'
 
 setup(
     name='nlpia_chat',
 
-    version='0.0.0',
+    version=__version__,
 
     description='A simple chat app (private chat forum like Slack) based on the channels.readthedocs.io',
 
