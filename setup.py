@@ -18,8 +18,10 @@ install_requires = (
     'channels',
 )
 
-
-__version__ = subprocess.check_output(["git", "describe"]).strip()
+try:
+    __version__ = subprocess.check_output(["git", "describe"]).strip()
+except subprocess.CalledProcessError:
+    __version__ = subprocess.check_output(["git", "log"])[7:49].strip()
 
 setup(
     name='nlpia_chat',
